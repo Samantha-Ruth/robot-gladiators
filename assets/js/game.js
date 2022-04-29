@@ -5,34 +5,49 @@ var randomNumber = function(min, max) {
 };
 
 // fight function (now with parameter for enemy's name)
-var fight = function(enemy) {
-    console.log(playerInfo);
-    console.log(enemy);
-    while (playerInfo.health > 0 && enemy.health > 0) {
-    // Ask player if they'd like to fight or run
-        var promptFight = window.prompt("Would you like to FIGHT or SKIP this battle?  Enger 'FIGHT' or 'SKIP' to choose.");
-        
-        // if player picks "skip", confirm and then stop the loop.
-        if (promptFight === "skip" || promptFight === "SKIP") {
-        //confirm player wants to skip
-        var confirmSkip = window.confirm("Are you sure you'd like to quit?");
 
-        // if yes (true), leave fight
-        if (confirmSkip) {
-            window.alert(playerInfo.name + " has decided to skip this fight. Goodbye!");
-            //subtract money from playerInfo.money for skipping
-            playerInfo.money = playerInfo.money - 10;
-            console.log("playerInfo.money", playerInfo.money);
+var fightOrSkip = function() {
+    //ask player if they'd like to fight or skip using fightOrSkip 
+    var promptFight = window.prompt("Would you like to FIGHT or SKIP this battle?  Enter 'FIGHT' or 'SKIP' to choose.");
+
+    // Conditional Recursive Function Call
+    if (promptFight === "" || promptFight === null) {
+    window.alert("You need to provide a valid answer! Please try again.");
+    return fightOrSkip();
+  }
+
+  // if player picks "skip" confirm and then stop the loop
+  promptFight = promptFight.toLowerCase();
+  if (promptFight === "skip") {
+    // confirm player wants to skip
+    var confirmSkip = window.confirm("Are you sure you'd like to quit?");
+    // if yes (true), leave fight
+    if (confirmSkip) {
+      window.alert(playerInfo.name + " has decided to skip this fight. Goodbye!");
+      // subtract money from playerMoney for skipping but don't let them go into the negative
+      playerInfo.money = Math.max(0, playerInfo.money - 10);
+      //return true if player wants to leave
+      return true;
+    }
+    //return false;
+  }
+}
+
+var fight = function(enemy) {
+    console.log(enemy);
+    // repeat and execute as long as enemy-robot is alive
+    while (playerInfo.health > 0 && enemy.health > 0) {
+        //ask player if they'd like to fight or skip using fightOrSkip function
+        if (fightOrSkip()) {
+            //if true, leave fight by breaking loop
             break;
         }
-    }
-        //generate random damage value based on player's attack power
             var damage = randomNumber(playerInfo.attack - 3, playerInfo.attack);
             enemy.health = Math.max(0, enemy.health - damage);
             console.log (
                 playerInfo.name + " attacked " + enemy.name + ". " + enemy.name + " now has " + enemy.health + " health remaining. "
             );
-
+            
         //check enemy's health
         if (enemy.health <= 0) {
             window.alert(enemy.name + " has died!");
@@ -67,16 +82,13 @@ var fight = function(enemy) {
 // Function to set name
 var getPlayerName = function() {
     var name = "";
-    // ******************
     while (name === "" || name == null) {
         name = prompt("What is your robot's name?");
     }
-    // ADD LOOP HERE WITH PROMPT AND CONDITION
-    //********************
-    console.log("You're robot's name is " + name);
+    console.log("Your robot's name is " + name);
     return name;
 };
-
+    
     var playerInfo = {
         name: getPlayerName(),
         health: 100,
@@ -97,7 +109,6 @@ var getPlayerName = function() {
                 window.alert("You don't have enough money!");
             }
         }, // comma!
-
         upgradeAttack: function() {
             if (this.money >=7) {
                 window.alert("Upgrading player's attack by 6 for 7 dollars.");
@@ -131,7 +142,11 @@ var getPlayerName = function() {
         playerInfo.reset();
 
         // fight each enemy-robot by looping over them and fighting them one at a time
-        for (var i = 0; i < enemyInfo.length; i++) {
+        for (var i = 0; i < enemyInfo.length; i++) 
+            if (playerInfo.name === "Exit") {
+                window.alert("You have excaped the game!");
+                break;
+            } else {
             // if player is still alive, keep fighting
             if (playerInfo.health > 0) {
                 // let player know what round they are in, remember that arrays start at 0 so it needs to have a 1 added to it
