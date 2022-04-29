@@ -6,6 +6,7 @@ var randomNumber = function(min, max) {
 
 // fight function (now with parameter for enemy's name)
 var fight = function(enemy) {
+    console.log(playerInfo);
     console.log(enemy);
     while (playerInfo.health > 0 && enemy.health > 0) {
     // Ask player if they'd like to fight or run
@@ -63,8 +64,21 @@ var fight = function(enemy) {
         }
     };
 
+// Function to set name
+var getPlayerName = function() {
+    var name = "";
+    // ******************
+    while (name === "" || name == null) {
+        name = prompt("What is your robot's name?");
+    }
+    // ADD LOOP HERE WITH PROMPT AND CONDITION
+    //********************
+    console.log("You're robot's name is " + name);
+    return name;
+};
+
     var playerInfo = {
-        name: window.prompt("What is your robot's name?"),
+        name: getPlayerName(),
         health: 100,
         attack: 10,
         money: 10,
@@ -83,6 +97,7 @@ var fight = function(enemy) {
                 window.alert("You don't have enough money!");
             }
         }, // comma!
+
         upgradeAttack: function() {
             if (this.money >=7) {
                 window.alert("Upgrading player's attack by 6 for 7 dollars.");
