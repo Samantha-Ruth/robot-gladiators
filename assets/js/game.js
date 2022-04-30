@@ -212,13 +212,20 @@ var getPlayerName = function() {
 var endGame = function() {
     window.alert("The game has now ended. Let's see how you did!");
     
-    //if player is still alive, player wins!
-    if (playerInfo.health > 0) {
-        window.alert("Great job, you've survived the game! You now have a score of " + playerInfo.money + ".");
-    } else {
-        window.alert("You've lost your robot in battle.");
+    // retrieve current high score from local storage 
+    var highScore = localStorage.getItem("highscore");
+    if (highScore === null) {
+        highScore = 0;
+    }
+       //compare score with current high score. If player has more money, player has new high score!
+    if (playerInfo.money > highScore) {
+        localStorage.setItem("highscore", playerInfo.money);
+        localStorage.setItem("name", playerInfo.name);
+        window.alert("Woo-hoo!!! You beat the high score of " + highScore + "! Your name is written in tiny, pixelated lights across this whole screen!");
     } 
-
+    else { 
+        alert(playerInfo.name + " did not beat the high score of " + highScore + ". Keep trying!");
+    }
     // ask player if they'd like to play again
     var playAgainConfirm = window.confirm("Would you like to play again?");
     
@@ -257,18 +264,3 @@ var shop = function() {
 
 //start first game when page loads
 startGame();
-
-        // // if player picks "skip", confirm and then stop the loop.
-        // if (promptFight === "skip" || promptFight === "SKIP") {
-        // //confirm player wants to skip
-        // var confirmSkip = window.confirm("Are you sure you'd like to quit?");
-
-        // // if yes (true), leave fight
-        // if (confirmSkip) {
-        //     window.alert(playerInfo.name + " has decided to skip this fight. Goodbye!");
-            //subtract money from playerInfo.money for skipping
-        //     playerInfo.money = playerInfo.money - 10;
-        //     console.log("playerInfo.money", playerInfo.money);
-        //     break;
-        // }
-        //generate random damage value based on player's attack power
